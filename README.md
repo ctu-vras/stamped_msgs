@@ -10,3 +10,7 @@ More reading e.g. here:
 
 - https://github.com/ros/std_msgs/issues/7
 - https://answers.ros.org/question/9715/stamped-std_msgs/
+
+## Building
+
+This repo is compatible with both ROS 1 and ROS 2. Just use catkin/ament/colcon as usual to build these messages.

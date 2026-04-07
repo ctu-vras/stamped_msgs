@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10.2)
 project(stamped_msgs)
 
 find_package(ament_cmake QUIET)
 find_package(catkin QUIET)
 
 if(catkin_FOUND)
-  ## ROS 1 build -----------------------------------------------------------------------------------------
+  ## ROS 1 build
   set(MESSAGE_DEPS
     std_msgs
   )
@@ -68,16 +68,8 @@ if(catkin_FOUND)
   catkin_package(
     CATKIN_DEPENDS message_runtime ${MESSAGE_DEPS}
   )
-  ## ----------------------------------------------------------------------------------------------------
 elseif(ament_cmake_FOUND)
-  ## ROS 2 build -----------------------------------------------------------------------------------------
-  if(NOT CMAKE_CXX_STANDARD)
-    set(CMAKE_CXX_STANDARD 17)
-  endif()
-
-  if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
-    add_compile_options(-Wall -Wextra -Wpedantic)
-  endif()
+  ## ROS 2 build
 
   find_package(ament_cmake REQUIRED)
   find_package(rosidl_default_generators REQUIRED)
@@ -142,7 +134,6 @@ elseif(ament_cmake_FOUND)
   ament_export_dependencies(rosidl_default_runtime)
 
   ament_package()
-  ## ----------------------------------------------------------------------------------------------------
 else()
   message(FATAL_ERROR "Neither catkin nor ament_cmake found.")
 endif()
