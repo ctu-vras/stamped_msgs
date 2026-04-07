@@ -76,6 +76,19 @@ elseif(ament_cmake_FOUND)
   find_package(std_msgs REQUIRED)
   find_package(builtin_interfaces REQUIRED)
 
+  # Can't use Duration name in Rolling because of https://github.com/ros2/rosidl_python/issues/257
+  find_package(rosidl_generator_py QUIET)
+  if(rosidl_generator_py_FOUND)
+    if(rosidl_generator_py_VERSION VERSION_LESS 0.25.0)
+      set(CAN_DECLARE_DURATION 1)
+    else()
+      set(CAN_DECLARE_DURATION 0)
+      message(WARNING "stamped_msgs/Duration is not valid with this version of rosidl_generator_py, not generating it.")
+    endif()
+  else()
+    set(CAN_DECLARE_DURATION 1)
+  endif()
+
   # Duration.msg and DurationArray.msg use builtin_interfaces/Duration in ROS 2 (msg_ros2/)
   # instead of the primitive 'duration' type used in ROS 1 (msg/)
   set(msg_files
@@ -88,7 +101,8 @@ elseif(ament_cmake_FOUND)
     "msg/CharArray.msg"
     "msg/ColorRGBA.msg"
     "msg/ColorRGBAArray.msg"
-    "${CMAKE_CURRENT_SOURCE_DIR}/msg_ros2:msg/Duration.msg"
+    # Duration is moved below within a conditional
+    #"${CMAKE_CURRENT_SOURCE_DIR}/msg_ros2:msg/Duration.msg"
     "${CMAKE_CURRENT_SOURCE_DIR}/msg_ros2:msg/DurationArray.msg"
     "msg/Empty.msg"
     "msg/Float32.msg"
@@ -124,6 +138,9 @@ elseif(ament_cmake_FOUND)
     "msg/UInt8Array.msg"
     "msg/UInt8MultiArray.msg"
   )
+  if(CAN_DECLARE_DURATION)
+    list(APPEND msg_files "${CMAKE_CURRENT_SOURCE_DIR}/msg_ros2:msg/Duration.msg")
+  endif()
 
   rosidl_generate_interfaces(${PROJECT_NAME}
     ${msg_files}
